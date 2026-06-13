@@ -10,6 +10,7 @@ data class DrawerUiState(val userName: String = "")
 sealed interface DrawerAction {
     data object OpenProfile : DrawerAction
     data object OpenAbout : DrawerAction
+    data object NavigateBack: DrawerAction
 }
 
 class DrawerViewModel : ViewModel() {

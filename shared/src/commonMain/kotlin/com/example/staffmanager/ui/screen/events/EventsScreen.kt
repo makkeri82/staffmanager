@@ -21,7 +21,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun EventsScreen(
     state: EventsUiState,
-    onAction: (EventsAction) -> Unit
+    // onAction: (EventsAction) -> Unit,
+    onEventClick: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -33,8 +34,7 @@ fun EventsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-                        onAction(EventsAction.SelectEvent(event.id))
-                        onAction(EventsAction.NavigateToEventDetails)
+                        onEventClick(event.id)
                     },
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
             ) {
@@ -54,7 +54,7 @@ fun PreviewEventsScreen() {
     MaterialTheme {
         EventsScreen(
             state = EventsUiState(events = mockEvents),
-            onAction = {}
+            onEventClick = {}
         )
     }
 }

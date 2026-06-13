@@ -1,4 +1,5 @@
 *.iml
+.claudeignore
 .kotlin
 .gradle
 **/build/

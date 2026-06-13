@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.DrawerValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,33 +21,43 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.savedstate.serialization.SavedStateConfiguration
 import com.example.staffmanager.di.appModule
 import com.example.staffmanager.ui.components.icons.menu
 import com.example.staffmanager.ui.navigation.BottomNavBar
+import com.example.staffmanager.ui.navigation.NavigationRoot
+import com.example.staffmanager.ui.navigation.Route
 import com.example.staffmanager.ui.screen.drawer.DrawerAction
 import com.example.staffmanager.ui.screen.drawer.DrawerScreen
 import com.example.staffmanager.ui.screen.drawer.DrawerViewModel
-import com.example.staffmanager.ui.screen.events.EventDetailsAction
-import com.example.staffmanager.ui.screen.events.EventDetailsScreen
-import com.example.staffmanager.ui.screen.events.EventDetailsViewModel
-import com.example.staffmanager.ui.screen.events.EventsAction
-import com.example.staffmanager.ui.screen.events.EventsScreen
-import com.example.staffmanager.ui.screen.events.EventsViewModel
-import com.example.staffmanager.ui.screen.main.HomeScreen
-import com.example.staffmanager.ui.screen.main.HomeViewModel
-import com.example.staffmanager.ui.screen.profile.ProfileAction
-import com.example.staffmanager.ui.screen.profile.ProfileScreen
-import com.example.staffmanager.ui.screen.profile.ProfileViewModel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.dsl.koinConfiguration
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App() {
+
+    val backStack = rememberNavBackStack(
+        configuration = SavedStateConfiguration {
+            serializersModule = SerializersModule {
+                polymorphic(NavKey::class) {
+                    subclass(Route.Home::class, Route.Home.serializer())
+                    subclass(Route.Event::class, Route.Event.serializer())
+                    subclass(Route.EventDetails::class, Route.EventDetails.serializer())
+                }
+            }
+        },
+        Route.Event
+    )
+    val currentRoute = backStack.lastOrNull()
+
     MaterialTheme {
         val navController = rememberNavController()
         val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -69,6 +80,7 @@ fun App() {
                             DrawerAction.OpenAbout -> {
                                 scope.launch { drawerState.close() }
                             }
+                            DrawerAction.NavigateBack -> { scope.launch { drawerState.close() }}
                         }
                     }
                 )
@@ -77,14 +89,33 @@ fun App() {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text("SESP", color = Color.White) },
+                        // title = { Text("SESP", color = Color.White) },
+                        title = {
+                            val title = when (currentRoute) {
+                                is Route.Home -> "SESP"
+                                is Route.Event -> "Events"
+                                is Route.EventDetails -> currentRoute.title
+                                else -> "SESP"
+                            }
+                            Text(title, color = Color.White)
+                        },
                         navigationIcon = {
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(
-                                    imageVector = menu,
-                                    contentDescription = "Menu",
-                                    tint = Color.White
-                                )
+                            if (backStack.size > 1) {
+                                IconButton(onClick = { backStack.removeLastOrNull() }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back",
+                                        tint = Color.White
+                                    )
+                                }
+                            } else {
+                                IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                    Icon(
+                                        imageVector = menu,
+                                        contentDescription = "Menu",
+                                        tint = Color.White
+                                    )
+                                }
                             }
                         },
                         colors = TopAppBarDefaults.topAppBarColors(
@@ -94,57 +125,10 @@ fun App() {
                 },
                 bottomBar = { BottomNavBar(navController) }
             ) { padding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = "home",
+                NavigationRoot(
+                    backStack = backStack,
                     modifier = Modifier.padding(padding)
-                ) {
-                    composable("home") {
-                        val viewModel: HomeViewModel = koinViewModel()
-                        val state by viewModel.uiState.collectAsState()
-                        HomeScreen(
-                            state = state,
-                            onAction = viewModel::onAction
-                        )
-                    }
-                    composable("events") {
-                        val viewModel: EventsViewModel = koinViewModel()
-                        val state by viewModel.uiState.collectAsState()
-                        EventsScreen(
-                            state = state,
-                            onAction = { action ->
-                                when (action) {
-                                    EventsAction.NavigateToEventDetails -> navController.navigate("event_details")
-                                    else -> viewModel.onAction(action)
-                                }
-                            }
-                        )
-                    }
-                    composable("event_details") {
-                        val viewModel: EventDetailsViewModel = koinViewModel()
-                        val state by viewModel.uiState.collectAsState()
-                        EventDetailsScreen(
-                            state = state,
-                            onAction = { action ->
-                                when (action) {
-                                    EventDetailsAction.NavigateBack -> navController.navigateUp()
-                                }
-                            }
-                        )
-                    }
-                    composable("profile") {
-                        val viewModel: ProfileViewModel = koinViewModel()
-                        val state by viewModel.uiState.collectAsState()
-                        ProfileScreen(
-                            state = state,
-                            onAction = { action ->
-                                when (action) {
-                                    ProfileAction.NavigateBack -> navController.navigateUp()
-                                }
-                            }
-                        )
-                    }
-                }
+                )
             }
         }
     }

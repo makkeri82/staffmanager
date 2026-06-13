@@ -34,7 +34,7 @@ class EventsViewModel(
     fun onAction(action: EventsAction) {
         when (action) {
             is EventsAction.SelectEvent -> selectionState.selectedEventId.value = action.eventId
-            EventsAction.NavigateToEventDetails -> Unit
+            else -> { }
         }
     }
 }

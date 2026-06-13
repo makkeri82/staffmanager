@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun HomeScreen(
     state: HomeUiState,
-    onAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -33,6 +32,6 @@ fun HomeScreen(
 @Composable
 fun PreviewHomeScreen() {
     MaterialTheme {
-        HomeScreen(state = HomeUiState(), onAction = {})
+        HomeScreen(state = HomeUiState())
     }
 }

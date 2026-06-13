@@ -52,5 +52,39 @@ val mockEvents = listOf(
         participants = listOf(mockUsers[1], mockUsers[2]),
         comments = listOf(mockComments[2]),
         createdTime = "2024-02-15T11:00:00Z"
+    ),
+    Event(
+        id = "e3",
+        eventName = "Qstock 2026",
+        title = "Qstock 2026",
+        description = "",
+        startDate = "2026-07-24T09:00:00Z",
+        endDate = "2024-07-25T17:00:00Z",
+        startTime = "09:00",
+        endTime = "17:00",
+        location = "Kuusisaari",
+        mapLinkUrl = "https://maps.app.goo.gl/CEEQiK5w1EjNywrS7",
+        createdBy = "2", // Created by Jane Smith
+        published = false,
+        participants = listOf(mockUsers[1], mockUsers[2]),
+        comments = listOf(mockComments[2]),
+        createdTime = "2024-02-15T11:00:00Z"
+    ),
+    Event(
+        id = "e4",
+        eventName = "Viikinki festarit",
+        title = "Viikinki festarit",
+        description = "mead, axes and heacy metal",
+        startDate = "2026-08-10T09:00:00Z",
+        endDate = "2024-08-12T17:00:00Z",
+        startTime = "09:00",
+        endTime = "17:00",
+        location = "Oslo",
+        mapLinkUrl = "https://maps.app.goo.gl/DZHg8MsF1t6U4HLS6",
+        createdBy = "2", // Created by Jane Smith
+        published = false,
+        participants = listOf(mockUsers[1], mockUsers[2]),
+        comments = listOf(mockComments[2]),
+        createdTime = "2024-02-15T11:00:00Z"
     )
 )
