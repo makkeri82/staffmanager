@@ -10,6 +10,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import com.example.staffmanager.ui.screen.chat.ChatViewModel
 import com.example.staffmanager.ui.screen.events.EventDetailsScreen
 import com.example.staffmanager.ui.screen.events.EventDetailsViewModel
 import com.example.staffmanager.ui.screen.events.EventsAction
@@ -54,7 +55,14 @@ fun NavigationRoot(
                 entry<Route.EventDetails> {
                     val viewModel: EventDetailsViewModel = koinViewModel()
                     val state by viewModel.uiState.collectAsState()
-                    EventDetailsScreen(state = state)
+                    val chatViewModel: ChatViewModel = koinViewModel()
+                    val chatState by chatViewModel.uiState.collectAsState()
+                    EventDetailsScreen(
+                        state = state,
+                        chatState = chatState,
+                        onAction = viewModel::onAction,
+                        onChatAction = chatViewModel::onAction
+                    )
                 }
                 entry<Route.Info> {
                     // TODO
