@@ -7,6 +7,7 @@ import com.example.staffmanager.repository.MockEventRepositoryImpl
 import com.example.staffmanager.repository.MockUserRepositoryImpl
 import com.example.staffmanager.repository.UserRepository
 import com.example.staffmanager.ui.screen.drawer.DrawerViewModel
+import com.example.staffmanager.ui.screen.chat.ChatViewModel
 import com.example.staffmanager.ui.screen.events.EventDetailsViewModel
 import com.example.staffmanager.ui.screen.events.EventsViewModel
 import com.example.staffmanager.ui.screen.main.HomeViewModel
@@ -28,6 +29,7 @@ val viewModule = module {
     viewModelOf(::HomeViewModel)
     viewModelOf(::EventsViewModel)
     viewModelOf(::EventDetailsViewModel)
+    viewModelOf(::ChatViewModel)
     viewModelOf(::DrawerViewModel)
     viewModelOf(::ProfileViewModel)
 }
