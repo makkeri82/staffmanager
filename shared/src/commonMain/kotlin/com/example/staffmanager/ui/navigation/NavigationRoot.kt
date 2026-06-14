@@ -1,11 +1,14 @@
 package com.example.staffmanager.ui.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.staffmanager.ui.screen.events.EventDetailsScreen
 import com.example.staffmanager.ui.screen.events.EventDetailsViewModel
@@ -14,58 +17,55 @@ import com.example.staffmanager.ui.screen.events.EventsScreen
 import com.example.staffmanager.ui.screen.events.EventsViewModel
 import com.example.staffmanager.ui.screen.main.HomeScreen
 import com.example.staffmanager.ui.screen.main.HomeViewModel
+import com.example.staffmanager.ui.screen.profile.ProfileScreen
+import com.example.staffmanager.ui.screen.profile.ProfileViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NavigationRoot(
-    backStack: MutableList<NavKey>,
-    modifier: Modifier = Modifier
+    navigationState: NavigationState,
+    navigator: Navigator,
+    modifier: Modifier
 ) {
     NavDisplay(
-        modifier = modifier,
-        backStack = backStack,
-        entryProvider = { key ->
-            when (key) {
-                is Route.Home -> {
-                    NavEntry(key) {
-                        val viewModel: HomeViewModel = koinViewModel()
-                        val state by viewModel.uiState.collectAsState()
-                        HomeScreen(state = state)
-                    }
+        modifier = modifier
+            .fillMaxSize(),
+        onBack = navigator::goBack,
+        entries = navigationState.toEntries(
+            entryProvider {
+                entry<Route.Home> {
+                    val viewModel: HomeViewModel = koinViewModel()
+                    val state by viewModel.uiState.collectAsState()
+                    HomeScreen(state)
                 }
-
-                is Route.Event -> {
-                    NavEntry(key) {
-                        val viewModel: EventsViewModel = koinViewModel()
-                        val state by viewModel.uiState.collectAsState()
-                        EventsScreen(
-                            state = state,
-                            onEventClick = { eventId ->
-                                val eventTitle =
-                                    state.events.find { it.id == eventId }?.eventName ?: "Details"
-                                viewModel.onAction(EventsAction.SelectEvent(eventId))
-                                backStack.add(Route.EventDetails(eventId, eventTitle))
-                            }
-                        )
-                    }
+                entry<Route.Event> {
+                    val viewModel: EventsViewModel = koinViewModel()
+                    val state by viewModel.uiState.collectAsState()
+                    EventsScreen(
+                        state = state,
+                        onEventClick = { eventId ->
+                            val eventTitle =
+                                state.events.find { it.id == eventId }?.eventName ?: "Details"
+                            viewModel.onAction(EventsAction.SelectEvent(eventId))
+                            navigator.navigate(Route.EventDetails(eventId, eventTitle))
+                        }
+                    )
                 }
-
-                is Route.EventDetails -> {
-                    NavEntry(key) {
-                        val viewModel: EventDetailsViewModel = koinViewModel()
-                        val state by viewModel.uiState.collectAsState()
-                        EventDetailsScreen(
-                            state = state,
-                            onClickBack = {
-                                backStack.removeLastOrNull()
-                            }
-                        )
-                    }
+                entry<Route.EventDetails> {
+                    val viewModel: EventDetailsViewModel = koinViewModel()
+                    val state by viewModel.uiState.collectAsState()
+                    EventDetailsScreen(state = state)
                 }
-
-                else -> error("Unknown NavKey: $key")
+                entry<Route.Info> {
+                    // TODO
+                }
+                entry<Route.Profile> {
+                    val viewModel: ProfileViewModel = koinViewModel()
+                    val state by viewModel.uiState.collectAsState()
+                    ProfileScreen(state)
+                }
             }
-        }
+        )
     )
 }
 /*

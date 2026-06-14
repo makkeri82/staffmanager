@@ -1,6 +1,7 @@
 package com.example.staffmanager.ui.screen.drawer
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -21,12 +22,15 @@ fun DrawerScreen(
     state: DrawerUiState,
     onAction: (DrawerAction) -> Unit
 ) {
-    ModalDrawerSheet {
+    ModalDrawerSheet(
+        modifier = Modifier.fillMaxWidth(0.6f)
+    ) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "Menu",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(horizontal = 28.dp, vertical = 8.dp)
+            modifier = Modifier
+                .padding(horizontal = 28.dp, vertical = 8.dp)
         )
         HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         Spacer(modifier = Modifier.height(8.dp))

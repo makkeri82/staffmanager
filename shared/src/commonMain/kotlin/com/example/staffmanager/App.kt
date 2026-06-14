@@ -17,54 +17,49 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.savedstate.serialization.SavedStateConfiguration
 import com.example.staffmanager.di.appModule
 import com.example.staffmanager.ui.components.icons.menu
 import com.example.staffmanager.ui.navigation.BottomNavBar
 import com.example.staffmanager.ui.navigation.NavigationRoot
+import com.example.staffmanager.ui.navigation.Navigator
 import com.example.staffmanager.ui.navigation.Route
+import com.example.staffmanager.ui.navigation.TOP_LEVEL_DESTINATIONS
+import com.example.staffmanager.ui.navigation.rememberNavigationState
 import com.example.staffmanager.ui.screen.drawer.DrawerAction
 import com.example.staffmanager.ui.screen.drawer.DrawerScreen
 import com.example.staffmanager.ui.screen.drawer.DrawerViewModel
 import kotlinx.coroutines.launch
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.dsl.koinConfiguration
+
+private const val APP_TITLE = "SESP"
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App() {
 
-    val backStack = rememberNavBackStack(
-        configuration = SavedStateConfiguration {
-            serializersModule = SerializersModule {
-                polymorphic(NavKey::class) {
-                    subclass(Route.Home::class, Route.Home.serializer())
-                    subclass(Route.Event::class, Route.Event.serializer())
-                    subclass(Route.EventDetails::class, Route.EventDetails.serializer())
-                }
-            }
-        },
-        Route.Event
+    val navigationState = rememberNavigationState(
+        startRoute = Route.Home,
+        topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
     )
-    val currentRoute = backStack.lastOrNull()
+    val navigator = remember {
+        Navigator(navigationState)
+    }
 
     MaterialTheme {
-        val navController = rememberNavController()
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         val scope = rememberCoroutineScope()
 
         val drawerViewModel: DrawerViewModel = koinViewModel()
         val drawerUiState by drawerViewModel.uiState.collectAsState()
+
+        val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.last()
 
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -75,10 +70,11 @@ fun App() {
                         when (action) {
                             DrawerAction.OpenProfile -> {
                                 scope.launch { drawerState.close() }
-                                navController.navigate("profile")
+                                navigator.navigate(Route.Profile)
                             }
                             DrawerAction.OpenAbout -> {
                                 scope.launch { drawerState.close() }
+                                // TODO: Navigate to AboutScreen when done
                             }
                             DrawerAction.NavigateBack -> { scope.launch { drawerState.close() }}
                         }
@@ -89,27 +85,24 @@ fun App() {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        // title = { Text("SESP", color = Color.White) },
                         title = {
                             val title = when (currentRoute) {
-                                is Route.Home -> "SESP"
-                                is Route.Event -> "Events"
                                 is Route.EventDetails -> currentRoute.title
-                                else -> "SESP"
+                                is Route.Profile -> "Profile"
+                                else -> APP_TITLE
                             }
                             Text(title, color = Color.White)
                         },
                         navigationIcon = {
-                            if (backStack.size > 1) {
-                                IconButton(onClick = { backStack.removeLastOrNull() }) {
+                            when (currentRoute) {
+                                is Route.EventDetails, is Route.Profile -> IconButton(onClick = { navigator.goBack() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                         contentDescription = "Back",
                                         tint = Color.White
                                     )
                                 }
-                            } else {
-                                IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                else -> IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                     Icon(
                                         imageVector = menu,
                                         contentDescription = "Menu",
@@ -123,10 +116,18 @@ fun App() {
                         )
                     )
                 },
-                bottomBar = { BottomNavBar(navController) }
+                bottomBar = {
+                    if (currentRoute in TOP_LEVEL_DESTINATIONS) {
+                        BottomNavBar(
+                            selectedKey = navigationState.topLevelRoute,
+                            onSelectKey = { navigator.navigate(it) }
+                        )
+                    }
+                }
             ) { padding ->
                 NavigationRoot(
-                    backStack = backStack,
+                    navigationState = navigationState,
+                    navigator = navigator,
                     modifier = Modifier.padding(padding)
                 )
             }

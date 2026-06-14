@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.staffmanager.mockData.User
 import com.example.staffmanager.repository.UserRepository
+import com.example.staffmanager.ui.screen.events.EventsAction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,5 +27,10 @@ class ProfileViewModel(private val userRepository: UserRepository) : ViewModel()
         }
     }
 
-    fun onAction(action: ProfileAction) {}
+    fun onAction(action: ProfileAction) {
+//        when (action) {
+//            is ProfileAction. ->
+//            else -> { }
+//        }
+    }
 }

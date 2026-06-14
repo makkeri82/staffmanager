@@ -58,7 +58,7 @@ kotlin {
             implementation(libs.lifecycle.viewmodel)
             implementation(libs.navigation.compose)
             implementation(libs.compose.uiBackHandler)
-            implementation(compose.materialIconsExtended)
+            implementation(libs.material.icons.extended)
 
             implementation(libs.navigation3.compose)
             implementation(libs.jetbrains.material3.adaptiveNavigation3)

@@ -32,8 +32,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventDetailsScreen(
-    state: EventDetailsUiState,
-    onClickBack: () -> Unit,
+    state: EventDetailsUiState
 ) {
         state.event?.let { e ->
         Column(
@@ -150,8 +149,7 @@ fun EventDetailsScreen(
 fun PreviewEventDetailsScreen() {
     MaterialTheme {
         EventDetailsScreen(
-            state = EventDetailsUiState(event = mockEvents.firstOrNull()),
-            onClickBack = {}
+            state = EventDetailsUiState(event = mockEvents.firstOrNull())
         )
     }
 }

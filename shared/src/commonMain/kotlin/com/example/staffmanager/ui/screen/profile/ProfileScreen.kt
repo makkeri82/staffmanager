@@ -29,125 +29,104 @@ import com.example.staffmanager.mockData.mockUsers
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    state: ProfileUiState,
-    onAction: (ProfileAction) -> Unit
+    state: ProfileUiState
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Profile") },
-                navigationIcon = {
-                    IconButton(onClick = { onAction(ProfileAction.NavigateBack) }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
+    state.user?.let { user ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "${user.firstName} ${user.lastName}",
+                style = MaterialTheme.typography.headlineMedium
             )
-        }
-    ) { padding ->
-        state.user?.let { user ->
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+            Text(
+                text = user.jobTitle,
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            HorizontalDivider()
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer
+                )
             ) {
-                Text(
-                    text = "${user.firstName} ${user.lastName}",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Text(
-                    text = user.jobTitle,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                HorizontalDivider()
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = "Contact",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                        Text(text = user.email, style = MaterialTheme.typography.bodyMedium)
-                        Text(text = user.phoneNumber, style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    Text(
+                        text = "Contact",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            text = "Role",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(text = user.role, style = MaterialTheme.typography.bodyMedium)
-                        Text(
-                            text = "Level: ${user.userLevel}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
+                    Text(text = user.email, style = MaterialTheme.typography.bodyMedium)
+                    Text(text = user.phoneNumber, style = MaterialTheme.typography.bodyMedium)
                 }
-
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        Text(
-                            text = "Personal",
-                            style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = "Birthday: ${user.birthday}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                }
-
-                HorizontalDivider()
-
-                Text(
-                    text = "About",
-                    style = MaterialTheme.typography.titleSmall
-                )
-                Text(
-                    text = user.additionalInfo,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = "Role",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(text = user.role, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = "Level: ${user.userLevel}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = "Personal",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "Birthday: ${user.birthday}",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            HorizontalDivider()
+
+            Text(
+                text = "About",
+                style = MaterialTheme.typography.titleSmall
+            )
+            Text(
+                text = user.additionalInfo,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
@@ -157,8 +136,7 @@ fun ProfileScreen(
 fun PreviewProfileScreen() {
     MaterialTheme {
         ProfileScreen(
-            ProfileUiState(user = mockUsers.firstOrNull()),
-            onAction = {}
+            ProfileUiState(user = mockUsers.firstOrNull())
         )
     }
 }

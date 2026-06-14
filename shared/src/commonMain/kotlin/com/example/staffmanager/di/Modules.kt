@@ -21,7 +21,9 @@ val appModule = module {
     singleOf(::MockEventRepositoryImpl).bind<EventRepository>()
     singleOf(::MockCommentRepositoryImpl).bind<CommentRepository>()
     singleOf(::MockUserRepositoryImpl).bind<UserRepository>()
+}
 
+val viewModule = module {
     // View models
     viewModelOf(::HomeViewModel)
     viewModelOf(::EventsViewModel)

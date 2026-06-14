@@ -13,5 +13,11 @@ sealed interface Route : NavKey {
     data object Event: Route, NavKey
 
     @Serializable
+    data object Info: Route, NavKey
+
+    @Serializable
     data class EventDetails(val eventId: String, val title: String): Route, NavKey
+
+    @Serializable
+    data object Profile: Route, NavKey
 }
