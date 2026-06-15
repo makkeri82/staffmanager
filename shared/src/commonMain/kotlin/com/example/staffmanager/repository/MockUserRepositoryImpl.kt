@@ -6,13 +6,9 @@ import com.example.staffmanager.mockData.mockUsers
 class MockUserRepositoryImpl : UserRepository {
     private val _users = mockUsers.toMutableList()
 
-    override suspend fun getUsers(): List<User> {
-        return _users.toList()
-    }
+    override suspend fun getUsers(): List<User> = _users.toList()
 
-    override suspend fun getUserById(id: Int): User? {
-        return _users.find { it.id == id }
-    }
+    override suspend fun getUserById(id: Int): User? = _users.find { it.id == id }
 
     override suspend fun createUser(user: User): User {
         val newId = if (_users.isEmpty()) 1 else _users.maxOf { it.id } + 1
@@ -31,7 +27,11 @@ class MockUserRepositoryImpl : UserRepository {
         }
     }
 
-    override suspend fun deleteUser(id: Int): Boolean {
-        return _users.removeAll { it.id == id }
-    }
+    override suspend fun deleteUser(id: Int): Boolean = _users.removeAll { it.id == id }
+
+    override suspend fun login(email: String, password: String): User? =
+        _users.find { it.email == email && it.password == password }
+
+    override suspend fun getRole(email: String): String? =
+        _users.find { it.email == email }?.userLevel
 }

@@ -70,7 +70,7 @@ fun NavigationRoot(
                 entry<Route.Profile> {
                     val viewModel: ProfileViewModel = koinViewModel()
                     val state by viewModel.uiState.collectAsState()
-                    ProfileScreen(state)
+                    ProfileScreen(state = state, onAction = viewModel::onAction)
                 }
             }
         )

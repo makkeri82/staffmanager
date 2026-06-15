@@ -15,6 +15,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -22,7 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.staffmanager.di.SessionState
 import com.example.staffmanager.di.appModule
+import com.example.staffmanager.repository.AuthRepository
+import com.example.staffmanager.repository.UserRepository
 import com.example.staffmanager.ui.components.icons.menu
 import com.example.staffmanager.ui.navigation.BottomNavBar
 import com.example.staffmanager.ui.navigation.NavigationRoot
@@ -33,8 +37,11 @@ import com.example.staffmanager.ui.navigation.rememberNavigationState
 import com.example.staffmanager.ui.screen.drawer.DrawerAction
 import com.example.staffmanager.ui.screen.drawer.DrawerScreen
 import com.example.staffmanager.ui.screen.drawer.DrawerViewModel
+import com.example.staffmanager.ui.screen.login.LoginScreen
+import com.example.staffmanager.ui.screen.login.LoginViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.KoinApplication
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.dsl.koinConfiguration
 
@@ -43,7 +50,37 @@ private const val APP_TITLE = "SESP"
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun App() {
+    val sessionState: SessionState = koinInject()
+    val authRepository: AuthRepository = koinInject()
+    val userRepository: UserRepository = koinInject()
 
+    LaunchedEffect(Unit) {
+        if (authRepository.isLoggedIn()) {
+            val email = authRepository.getEmail()
+            if (email != null) {
+                val freshRole = userRepository.getRole(email)
+                sessionState.role = freshRole
+                sessionState.isLoggedIn = true
+            } else {
+                authRepository.clearSession()
+            }
+        }
+    }
+
+    MaterialTheme {
+        if (!sessionState.isLoggedIn) {
+            val loginViewModel: LoginViewModel = koinViewModel()
+            val loginState by loginViewModel.uiState.collectAsState()
+            LoginScreen(state = loginState, onAction = loginViewModel::onAction)
+        } else {
+            MainApp()
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun MainApp() {
     val navigationState = rememberNavigationState(
         startRoute = Route.Home,
         topLevelRoutes = TOP_LEVEL_DESTINATIONS.keys
@@ -52,85 +89,82 @@ fun App() {
         Navigator(navigationState)
     }
 
-    MaterialTheme {
-        val drawerState = rememberDrawerState(DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
 
-        val drawerViewModel: DrawerViewModel = koinViewModel()
-        val drawerUiState by drawerViewModel.uiState.collectAsState()
+    val drawerViewModel: DrawerViewModel = koinViewModel()
+    val drawerUiState by drawerViewModel.uiState.collectAsState()
 
-        val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.last()
+    val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.last()
 
-        ModalNavigationDrawer(
-            drawerState = drawerState,
-            drawerContent = {
-                DrawerScreen(
-                    state = drawerUiState,
-                    onAction = { action ->
-                        when (action) {
-                            DrawerAction.OpenProfile -> {
-                                scope.launch { drawerState.close() }
-                                navigator.navigate(Route.Profile)
-                            }
-                            DrawerAction.OpenAbout -> {
-                                scope.launch { drawerState.close() }
-                                // TODO: Navigate to AboutScreen when done
-                            }
-                            DrawerAction.NavigateBack -> { scope.launch { drawerState.close() }}
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            DrawerScreen(
+                state = drawerUiState,
+                onAction = { action ->
+                    when (action) {
+                        DrawerAction.OpenProfile -> {
+                            scope.launch { drawerState.close() }
+                            navigator.navigate(Route.Profile)
                         }
-                    }
-                )
-            }
-        ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = {
-                            val title = when (currentRoute) {
-                                is Route.EventDetails -> currentRoute.title
-                                is Route.Profile -> "Profile"
-                                else -> APP_TITLE
-                            }
-                            Text(title, color = Color.White)
-                        },
-                        navigationIcon = {
-                            when (currentRoute) {
-                                is Route.EventDetails, is Route.Profile -> IconButton(onClick = { navigator.goBack() }) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Back",
-                                        tint = Color.White
-                                    )
-                                }
-                                else -> IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                    Icon(
-                                        imageVector = menu,
-                                        contentDescription = "Menu",
-                                        tint = Color.White
-                                    )
-                                }
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Black
-                        )
-                    )
-                },
-                bottomBar = {
-                    if (currentRoute in TOP_LEVEL_DESTINATIONS) {
-                        BottomNavBar(
-                            selectedKey = navigationState.topLevelRoute,
-                            onSelectKey = { navigator.navigate(it) }
-                        )
+                        DrawerAction.OpenAbout -> {
+                            scope.launch { drawerState.close() }
+                        }
+                        DrawerAction.NavigateBack -> { scope.launch { drawerState.close() } }
                     }
                 }
-            ) { padding ->
-                NavigationRoot(
-                    navigationState = navigationState,
-                    navigator = navigator,
-                    modifier = Modifier.padding(padding)
+            )
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        val title = when (currentRoute) {
+                            is Route.EventDetails -> currentRoute.title
+                            is Route.Profile -> "Profile"
+                            else -> APP_TITLE
+                        }
+                        Text(title, color = Color.White)
+                    },
+                    navigationIcon = {
+                        when (currentRoute) {
+                            is Route.EventDetails, is Route.Profile -> IconButton(onClick = { navigator.goBack() }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back",
+                                    tint = Color.White
+                                )
+                            }
+                            else -> IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                Icon(
+                                    imageVector = menu,
+                                    contentDescription = "Menu",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Black
+                    )
                 )
+            },
+            bottomBar = {
+                if (currentRoute in TOP_LEVEL_DESTINATIONS) {
+                    BottomNavBar(
+                        selectedKey = navigationState.topLevelRoute,
+                        onSelectKey = { navigator.navigate(it) }
+                    )
+                }
             }
+        ) { padding ->
+            NavigationRoot(
+                navigationState = navigationState,
+                navigator = navigator,
+                modifier = Modifier.padding(padding)
+            )
         }
     }
 }
