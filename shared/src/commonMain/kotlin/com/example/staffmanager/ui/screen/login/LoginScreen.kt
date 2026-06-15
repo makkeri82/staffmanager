@@ -1,5 +1,6 @@
 package com.example.staffmanager.ui.screen.login
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -40,8 +42,9 @@ fun LoginScreen(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = modifier.fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center,
     ) {
         Column(
             modifier = Modifier
@@ -104,7 +107,6 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !state.isLoading
             ) {
-                // TODO: BUG: Loading stays in TRUE state after login
                 if (state.isLoading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(20.dp),
