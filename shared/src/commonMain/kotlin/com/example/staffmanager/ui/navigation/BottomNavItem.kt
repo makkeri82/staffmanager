@@ -11,7 +11,7 @@ data class BottomNavItem(
     val icon: ImageVector
 )
 
-val TOP_LEVEL_DESTINATIONS = mapOf(
+val TOP_LEVEL_DESTINATIONS: Map<Route, BottomNavItem> = mapOf(
     Route.Home to BottomNavItem(
         icon = Icons.Default.Home,
         title = "Home"

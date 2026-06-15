@@ -15,6 +15,7 @@ kotlin = "2.3.21"
 material3 = "1.11.0-alpha07"
 
 koin = "4.2.1"
+kvault = "1.12.0"
 materialIconsExtended = "1.7.3"
 navigationCompose = "2.9.2"
 multiplatform-nav3-ui = "1.1.1"
@@ -56,6 +57,7 @@ lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", versi
 jetbrains-material3-adaptiveNavigation3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "compose-multiplatform-adaptive" }
 jetbrains-lifecycle-viewmodelNavigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-multiplatform-lifecycle" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.9.0" }
+kvault = { module = "com.liftric:kvault", version.ref = "kvault" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

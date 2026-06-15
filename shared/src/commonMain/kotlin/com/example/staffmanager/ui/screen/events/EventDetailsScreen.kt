@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Event
 import com.example.staffmanager.ui.screen.chat.ChatAction
@@ -142,23 +143,25 @@ private fun EventDetailsContent(state: EventDetailsUiState) {
 
             HorizontalDivider()
 
-            Text(
-                text = "Participants (${e.participants.size})",
-                style = MaterialTheme.typography.titleSmall
-            )
-            e.participants.forEach { user ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    SuggestionChip(
-                        onClick = {},
-                        label = { Text("${user.firstName} ${user.lastName}") }
-                    )
+            if (state.isAdmin) {
+                Text(
+                    text = "Participants (${e.participants.size})",
+                    style = MaterialTheme.typography.titleSmall
+                )
+                e.participants.forEach { user ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        SuggestionChip(
+                            onClick = {},
+                            label = { Text("${user.firstName} ${user.lastName}") }
+                        )
+                    }
                 }
-            }
 
-            HorizontalDivider()
+                HorizontalDivider()
+            }
 
 //            AssistChip(
 //                onClick = {},
@@ -214,7 +217,7 @@ private fun EventDetailsTabBar(
         NavigationBarItem(
             selected = activeTab == EventDetailsTab.CHAT,
             onClick = { onAction(EventDetailsAction.SelectTab(EventDetailsTab.CHAT)) },
-            icon = { Icon(Icons.Default.Chat, contentDescription = "Chat") },
+            icon = { Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "Chat") },
             label = { Text("Chat") }
         )
     }
