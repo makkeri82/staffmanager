@@ -15,6 +15,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,6 +24,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigationevent.compose.LocalNavigationEventDispatcherOwner
+import androidx.navigationevent.compose.rememberNavigationEventDispatcherOwner
 import com.example.staffmanager.di.SessionState
 import com.example.staffmanager.di.appModule
 import com.example.staffmanager.di.viewModule
@@ -79,6 +82,7 @@ fun App() {
         } else {
             MainApp()
         }
+//         MainApp()
     }
 }
 
@@ -189,7 +193,10 @@ fun PreviewApp() {
         }),
         content = {
             MaterialTheme {
-                App()
+                val dispatcherOwner = rememberNavigationEventDispatcherOwner(parent = null)
+                CompositionLocalProvider(LocalNavigationEventDispatcherOwner provides dispatcherOwner) {
+                    App()
+                }
             }
         })
 }

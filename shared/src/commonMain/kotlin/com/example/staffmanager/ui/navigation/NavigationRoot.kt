@@ -1,18 +1,12 @@
 package com.example.staffmanager.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.RoundRect
-import androidx.navigation3.runtime.NavEntry
-import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
-import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import androidx.savedstate.serialization.SavedStateConfiguration
 import com.example.staffmanager.ui.screen.chat.ChatViewModel
 import com.example.staffmanager.ui.screen.events.EventDetailsScreen
 import com.example.staffmanager.ui.screen.events.EventDetailsViewModel
@@ -21,10 +15,9 @@ import com.example.staffmanager.ui.screen.events.EventsScreen
 import com.example.staffmanager.ui.screen.events.EventsViewModel
 import com.example.staffmanager.ui.screen.main.HomeScreen
 import com.example.staffmanager.ui.screen.main.HomeViewModel
+import com.example.staffmanager.ui.screen.messenger.MessengerScreen
 import com.example.staffmanager.ui.screen.profile.ProfileScreen
 import com.example.staffmanager.ui.screen.profile.ProfileViewModel
-import kotlinx.serialization.modules.SerializersModule
-import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -77,6 +70,9 @@ fun NavigationRoot(
                     val viewModel: ProfileViewModel = koinViewModel()
                     val state by viewModel.uiState.collectAsState()
                     ProfileScreen(state = state, onAction = viewModel::onAction)
+                }
+                entry<Route.Messenger> {
+                    MessengerScreen()
                 }
             }
         )

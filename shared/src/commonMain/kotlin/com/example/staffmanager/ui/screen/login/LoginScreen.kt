@@ -34,6 +34,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.staffmanager.theme.EventAppTheme
+import com.example.staffmanager.ui.components.EventAppLink
 
 @Composable
 fun LoginScreen(
@@ -104,7 +106,8 @@ fun LoginScreen(
 
             Button(
                 onClick = { onAction(LoginAction.Login) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.onPrimary),
                 enabled = !state.isLoading
             ) {
                 if (state.isLoading) {
@@ -117,6 +120,13 @@ fun LoginScreen(
                     Text("Sign In")
                 }
             }
+            EventAppLink(
+                text = "Don't have account?",
+                onClick = {
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            )
         }
     }
 }
@@ -124,7 +134,7 @@ fun LoginScreen(
 @Composable
 @Preview
 fun PreviewLoginScreen() {
-    MaterialTheme {
+    EventAppTheme {
         LoginScreen(state = LoginUiState(), onAction = {})
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
@@ -35,13 +36,21 @@ fun DrawerScreen(
         HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
         Spacer(modifier = Modifier.height(8.dp))
 
+//        NavigationDrawerItem(
+//            icon = { Icon(Icons.Default.Person, contentDescription = null) },
+//            label = { Text("Profile") },
+//            selected = false,
+//            onClick = { onAction(DrawerAction.OpenProfile) },
+//            modifier = Modifier.padding(horizontal = 12.dp)
+//        )
         NavigationDrawerItem(
-            icon = { Icon(Icons.Default.Person, contentDescription = null) },
-            label = { Text("Profile") },
+            icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+            label = { Text("Settings") },
             selected = false,
-            onClick = { onAction(DrawerAction.OpenProfile) },
+            onClick = { onAction(DrawerAction.OpenAbout) },
             modifier = Modifier.padding(horizontal = 12.dp)
         )
+
         NavigationDrawerItem(
             icon = { Icon(Icons.Default.Info, contentDescription = null) },
             label = { Text("About") },

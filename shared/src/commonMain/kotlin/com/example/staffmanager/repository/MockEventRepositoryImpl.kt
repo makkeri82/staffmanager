@@ -1,10 +1,10 @@
 package com.example.staffmanager.repository
 
 import com.example.staffmanager.mockData.Event
-import com.example.staffmanager.mockData.mockEvents
+import com.example.staffmanager.mockData.mockEventsUpcoming
 
 class MockEventRepositoryImpl : EventRepository {
-    private val _events = mockEvents.toMutableList()
+    private val _events = mockEventsUpcoming.toMutableList()
 
     override suspend fun getEvents(): List<Event> = _events.toList()
 
