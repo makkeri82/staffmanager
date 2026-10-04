@@ -12,12 +12,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
-import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Event
 import com.example.staffmanager.ui.screen.chat.ChatAction
 import com.example.staffmanager.ui.screen.chat.ChatScreen
 import com.example.staffmanager.ui.screen.chat.ChatUiState
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +28,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -223,15 +222,17 @@ private fun EventDetailsTabBar(
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-@Preview
 fun PreviewEventDetailsScreen() {
     MaterialTheme {
-        EventDetailsScreen(
-            state = EventDetailsUiState(event = mockEvents.firstOrNull()),
-            chatState = ChatUiState(),
-            onAction = {},
-            onChatAction = {}
-        )
+        Surface {
+            EventDetailsScreen(
+                state = EventDetailsUiState(event = mockEvents.firstOrNull()),
+                chatState = ChatUiState(),
+                onAction = {},
+                onChatAction = {}
+            )
+        }
     }
 }
