@@ -1,9 +1,10 @@
 package com.example.staffmanager.ui.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.ui.graphics.vector.ImageVector
 
 data class BottomNavItem(
@@ -20,8 +21,12 @@ val TOP_LEVEL_DESTINATIONS: Map<Route, BottomNavItem> = mapOf(
         icon = Icons.Default.Event,
         title = "Events"
     ),
-    Route.Info to BottomNavItem(
-        icon = Icons.Default.Info,
-        title = "Info"
+    Route.Messenger to BottomNavItem(
+        icon = Icons.Default.ChatBubble,
+        title = "Messages"
+    ),
+    Route.Profile to BottomNavItem (
+        icon = Icons.Default.AccountCircle,
+        title = "Profile"
     )
 )

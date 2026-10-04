@@ -76,6 +76,7 @@ val serializersConfig = SavedStateConfiguration {
             subclass(Route.EventDetails::class, Route.EventDetails.serializer())
             subclass(Route.Info::class, Route.Info.serializer())
             subclass(Route.Profile::class, Route.Profile.serializer())
+            subclass(Route.Messenger::class, Route.Messenger.serializer())
         }
     }
 }
