@@ -25,8 +25,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.staffmanager.di.SessionState
 import com.example.staffmanager.di.appModule
+import com.example.staffmanager.di.viewModule
 import com.example.staffmanager.repository.AuthRepository
+import com.example.staffmanager.repository.MockAuthRepositoryImpl
 import com.example.staffmanager.repository.UserRepository
+import com.example.staffmanager.theme.EventAppTheme
 import com.example.staffmanager.ui.components.icons.menu
 import com.example.staffmanager.ui.navigation.BottomNavBar
 import com.example.staffmanager.ui.navigation.NavigationRoot
@@ -44,6 +47,7 @@ import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.dsl.koinConfiguration
+import org.koin.dsl.module
 
 private const val APP_TITLE = "SESP"
 
@@ -67,7 +71,7 @@ fun App() {
         }
     }
 
-    MaterialTheme {
+    EventAppTheme {
         if (!sessionState.isLoggedIn) {
             val loginViewModel: LoginViewModel = koinViewModel()
             val loginState by loginViewModel.uiState.collectAsState()
@@ -173,7 +177,16 @@ private fun MainApp() {
 @Preview
 fun PreviewApp() {
     KoinApplication(
-        configuration = koinConfiguration(declaration = { modules(appModule) }),
+        configuration = koinConfiguration(declaration = {
+            allowOverride(true)
+            modules(
+                appModule,
+                viewModule,
+                module {
+                    single<AuthRepository> { MockAuthRepositoryImpl() }
+                }
+            )
+        }),
         content = {
             MaterialTheme {
                 App()

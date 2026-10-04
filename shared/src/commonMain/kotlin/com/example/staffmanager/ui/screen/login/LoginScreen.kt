@@ -54,7 +54,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "SESP",
+                text = "EventsApp",
                 style = MaterialTheme.typography.displaySmall
             )
             Text(

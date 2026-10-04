@@ -6,10 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.RoundRect
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
 import com.example.staffmanager.ui.screen.chat.ChatViewModel
 import com.example.staffmanager.ui.screen.events.EventDetailsScreen
 import com.example.staffmanager.ui.screen.events.EventDetailsViewModel
@@ -20,6 +23,8 @@ import com.example.staffmanager.ui.screen.main.HomeScreen
 import com.example.staffmanager.ui.screen.main.HomeViewModel
 import com.example.staffmanager.ui.screen.profile.ProfileScreen
 import com.example.staffmanager.ui.screen.profile.ProfileViewModel
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -37,7 +42,8 @@ fun NavigationRoot(
                 entry<Route.Home> {
                     val viewModel: HomeViewModel = koinViewModel()
                     val state by viewModel.uiState.collectAsState()
-                    HomeScreen(state)
+                    HomeScreen(state,
+                        onEventClick = {})
                 }
                 entry<Route.Event> {
                     val viewModel: EventsViewModel = koinViewModel()
