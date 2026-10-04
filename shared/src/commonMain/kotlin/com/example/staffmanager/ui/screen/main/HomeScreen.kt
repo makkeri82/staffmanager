@@ -3,12 +3,19 @@ package com.example.staffmanager.ui.screen.main
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
+import com.example.staffmanager.mockData.mockEventsAttended
 import com.example.staffmanager.mockData.mockEventsUpcoming
 import com.example.staffmanager.theme.EventAppTheme
+import com.example.staffmanager.ui.components.EventList
 
 @Composable
 fun HomeScreen(
@@ -22,10 +29,16 @@ fun HomeScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
 
-//        EventList(
-//            events = state.events,
-//            onEventClick = onEventClick
-//        )
+        Text(
+            text = "Attended",
+            style = MaterialTheme.typography.titleLarge,
+            fontSize = 24.sp,
+            modifier = modifier.padding(12.dp)
+        )
+        EventList(
+            events = state.events,
+            onEventClick = onEventClick
+        )
     }
 }
 
@@ -36,6 +49,6 @@ fun HomeScreen(
 @Composable
 fun PreviewHomeScreen() {
     EventAppTheme {
-        HomeScreen(state = HomeUiState(events = mockEventsUpcoming), onEventClick = {})
+        HomeScreen(state = HomeUiState(events = mockEventsAttended), onEventClick = {})
     }
 }

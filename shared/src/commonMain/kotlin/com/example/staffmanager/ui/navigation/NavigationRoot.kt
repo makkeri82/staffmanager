@@ -7,12 +7,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.example.staffmanager.ui.screen.chat.ChatViewModel
 import com.example.staffmanager.ui.screen.events.EventDetailsScreen
 import com.example.staffmanager.ui.screen.events.EventDetailsViewModel
 import com.example.staffmanager.ui.screen.events.EventsAction
 import com.example.staffmanager.ui.screen.events.EventsScreen
 import com.example.staffmanager.ui.screen.events.EventsViewModel
+import com.example.staffmanager.ui.screen.main.HomeAction
 import com.example.staffmanager.ui.screen.main.HomeScreen
 import com.example.staffmanager.ui.screen.main.HomeViewModel
 import com.example.staffmanager.ui.screen.messenger.MessengerScreen
@@ -36,7 +36,12 @@ fun NavigationRoot(
                     val viewModel: HomeViewModel = koinViewModel()
                     val state by viewModel.uiState.collectAsState()
                     HomeScreen(state,
-                        onEventClick = {})
+                        onEventClick = { eventId ->
+                            val eventTitle =
+                                state.events.find { it.id == eventId }?.eventName ?: "Details"
+                            viewModel.onAction(HomeAction.SelectEvent(eventId))
+                            navigator.navigate(Route.EventDetails(eventId, eventTitle))
+                        })
                 }
                 entry<Route.Event> {
                     val viewModel: EventsViewModel = koinViewModel()
@@ -54,14 +59,7 @@ fun NavigationRoot(
                 entry<Route.EventDetails> {
                     val viewModel: EventDetailsViewModel = koinViewModel()
                     val state by viewModel.uiState.collectAsState()
-                    val chatViewModel: ChatViewModel = koinViewModel()
-                    val chatState by chatViewModel.uiState.collectAsState()
-                    EventDetailsScreen(
-                        state = state,
-                        chatState = chatState,
-                        onAction = viewModel::onAction,
-                        onChatAction = chatViewModel::onAction
-                    )
+                    EventDetailsScreen(state = state)
                 }
                 entry<Route.Info> {
                     // TODO

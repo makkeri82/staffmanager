@@ -4,5 +4,7 @@ import com.example.staffmanager.mockData.Event
 
 interface EventRepository {
     suspend fun getEvents(): List<Event>
+
+    suspend fun getAttendedEvents(): List<Event>
     suspend fun getEventById(id: String): Event?
 }

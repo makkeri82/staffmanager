@@ -22,7 +22,7 @@ fun EventList(
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(8.dp)
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
+        //modifier = modifier.fillMaxSize(),
         contentPadding = contentPadding,
         verticalArrangement = verticalArrangement
     ) {

@@ -35,7 +35,7 @@ fun EventAppTheme(
     }
     MaterialTheme(
         colorScheme = LightColorTheme,
-        typography = sespTypography(),
+        // typography = sespTypography(),
         content = content
     )
 }

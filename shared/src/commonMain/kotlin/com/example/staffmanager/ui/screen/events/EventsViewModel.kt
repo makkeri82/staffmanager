@@ -11,7 +11,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class EventsUiState(val events: List<Event> = emptyList())
+data class EventsUiState(
+    val events: List<Event> = emptyList(),
+    val isAdmin: Boolean = false
+)
 
 sealed interface EventsAction {
     data class SelectEvent(val eventId: String) : EventsAction
