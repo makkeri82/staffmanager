@@ -108,7 +108,6 @@ fun LoginScreen(
                 onClick = { onAction(LoginAction.Login) },
                 modifier = Modifier.fillMaxWidth()
                     .background(MaterialTheme.colorScheme.onPrimary),
-                enabled = !state.isLoading
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(
